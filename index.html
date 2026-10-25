@@ -1,0 +1,441 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Visual Crew</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Visual Crew: wedding, engagement and event photography and film. Book on WhatsApp.">
+<script>
+  // Theme before first paint: white by default, dark only if the visitor chose it.
+  (function () {
+    var m = "light";
+    try { m = localStorage.getItem("vc-theme") || "light"; } catch (e) {}
+    document.documentElement.setAttribute("data-vc", m === "dark" ? "dark" : "light");
+  })();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;900&family=Doto:wght@700;900&family=Manrope:wght@400;500;700;800&display=swap">
+<style>
+/* Layout: an LED signboard. Dot-matrix logo lit up top, then reel, photos, albums, process and a contact board.
+   Theme: white by default; the visitor's toggle sets data-vc="dark" on <html>. */
+:root {
+  --bg: #FFFFFF;
+  --panel: #F4F5F8;
+  --line: #E2E4EA;
+  --fg: #101218;
+  --mute: #5B6172;
+  --red: #E3121B;
+  --blue: #1457F5;
+  --led-off: #E6E8EE;
+  --head: rgba(255,255,255,.88);
+  --shadow: 0 24px 60px -34px rgba(16,18,24,.35);
+  --display: "Big Shoulders Display", "Arial Narrow", Impact, sans-serif;
+  --body: "Manrope", "Segoe UI", system-ui, -apple-system, Roboto, sans-serif;
+  --dot: "Doto", "Courier New", monospace;
+  --wrap: 1200px;
+  color-scheme: light;
+}
+:root[data-vc="dark"] {
+  --bg: #0A0B0E;
+  --panel: #13151B;
+  --line: #242731;
+  --fg: #F1F2F5;
+  --mute: #9298A8;
+  --red: #FF2A2F;
+  --blue: #3A74FF;
+  --led-off: #1C1F27;
+  --head: rgba(10,11,14,.86);
+  --shadow: 0 30px 80px -30px rgba(58,116,255,.35);
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { transition: none !important; } }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--body);
+  font-size: 17px;
+  line-height: 1.6;
+  margin: 0;
+  overflow-x: hidden;
+  transition: background .25s ease, color .25s ease;
+}
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+img, video, canvas { max-width: 100%; }
+.wrap { max-width: var(--wrap); margin: 0 auto; padding-left: max(20px, env(safe-area-inset-left, 0px)); padding-right: max(20px, env(safe-area-inset-right, 0px)); }
+a { color: inherit; }
+:focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; border-radius: 4px; }
+h1, h2, h3 { font-family: var(--display); font-weight: 900; line-height: 0.95; margin: 0; text-wrap: balance; letter-spacing: 0.01em; text-transform: uppercase; }
+h2 { font-size: clamp(44px, 8vw, 96px); }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.eyebrow { font-family: var(--dot); font-weight: 900; font-size: 17px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--mute); margin: 0 0 14px; }
+.eyebrow b { color: var(--red); }
+.lead { color: var(--mute); max-width: 52ch; margin: 18px 0 0; }
+
+/* buttons */
+.btns { display: flex; flex-wrap: wrap; gap: 12px; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 48px; padding: 12px 22px; border-radius: 999px; font-weight: 800; font-size: 16px; text-decoration: none; border: 2px solid transparent; cursor: pointer; font-family: var(--body); transition: transform .15s ease, border-color .15s ease; -webkit-tap-highlight-color: transparent; }
+.btn:hover { transform: translateY(-2px); }
+.btn svg { width: 20px; height: 20px; flex: none; }
+.btn-wa { background: var(--red); color: #fff; }
+.btn-ghost { background: transparent; color: var(--fg); border-color: var(--line); }
+.btn-ghost:hover { border-color: var(--fg); }
+
+/* header */
+header { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg); background: var(--head); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
+.bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-block: 10px; }
+.bar img { height: 30px; width: auto; display: block; }
+nav { display: flex; gap: clamp(10px, 2vw, 22px); align-items: center; }
+nav a.link { text-decoration: none; font-weight: 700; font-size: 15px; color: var(--mute); }
+nav a.link:hover { color: var(--fg); }
+nav .btn { min-height: 40px; padding: 8px 16px; font-size: 14px; }
+.toggle { width: 42px; height: 42px; border-radius: 999px; border: 1px solid var(--line); background: var(--panel); color: var(--fg); display: grid; place-items: center; cursor: pointer; flex: none; padding: 0; }
+.toggle svg { width: 20px; height: 20px; }
+.toggle .sun { display: none; }
+:root[data-vc="dark"] .toggle .sun { display: block; }
+:root[data-vc="dark"] .toggle .moon { display: none; }
+@media (max-width: 760px) { nav a.link { display: none; } }
+
+/* hero */
+.hero { position: relative; overflow: hidden; padding-block: clamp(40px, 9vw, 110px) clamp(48px, 7vw, 90px);
+  background-image: radial-gradient(var(--led-off) 1.4px, transparent 1.6px); background-size: 14px 14px; }
+.hero::after { content: ""; position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 40%, transparent 30%, var(--bg) 78%); pointer-events: none; }
+.hero .wrap { position: relative; z-index: 1; display: grid; gap: clamp(22px, 4vw, 34px); justify-items: center; text-align: center; }
+#led { width: min(860px, 100%); aspect-ratio: 2.219; height: auto; display: block; }
+.hero p.tag { font-size: clamp(18px, 2.4vw, 24px); margin: 0; max-width: 34ch; font-weight: 500; text-wrap: balance; }
+.hero .btns { justify-content: center; }
+@media (max-width: 420px) { .hero .btns { width: 100%; } .hero .btns .btn { flex: 1 1 100%; } }
+
+/* reel */
+section { padding-block: clamp(56px, 9vw, 120px); }
+.reel { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: clamp(32px, 6vw, 80px); align-items: center; }
+.reel > div { min-width: 0; }
+@media (max-width: 860px) { .reel { grid-template-columns: 1fr; } }
+.words { display: flex; flex-wrap: wrap; gap: 4px 18px; margin-top: 26px; font-family: var(--display); font-weight: 900; font-size: clamp(38px, 6vw, 72px); line-height: 1; }
+.words span:nth-child(2) { color: var(--red); }
+.words span:nth-child(3) { color: var(--blue); }
+.phone { position: relative; width: min(360px, 100%); aspect-ratio: 9 / 16; margin: 0 auto; border-radius: 34px; overflow: hidden; border: 8px solid var(--fg); background: #000; box-shadow: var(--shadow); }
+.phone video { width: 100%; height: 100%; object-fit: cover; display: block; }
+.sound { position: absolute; right: 12px; bottom: 12px; min-height: 36px; background: rgba(10,11,14,.75); color: #fff; border: 1px solid rgba(255,255,255,.25); border-radius: 999px; padding: 6px 14px; font: 700 13px var(--body); cursor: pointer; }
+
+/* section heads */
+.head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 16px 20px; margin-bottom: clamp(24px, 4vw, 36px); }
+.count { font-family: var(--dot); font-weight: 900; font-size: 20px; color: var(--mute); font-variant-numeric: tabular-nums; margin: 0; }
+.count b { color: var(--blue); }
+
+/* photos */
+.grid { columns: 3 260px; column-gap: 14px; }
+@media (max-width: 560px) { .grid { columns: 2; column-gap: 10px; } .grid button { margin-bottom: 10px !important; } }
+.grid button { display: block; width: 100%; padding: 0; margin: 0 0 14px; border: 0; background: var(--panel); border-radius: 6px; overflow: hidden; cursor: zoom-in; break-inside: avoid; -webkit-column-break-inside: avoid; -webkit-tap-highlight-color: transparent; }
+.grid img { display: block; width: 100%; height: auto; transition: transform .5s ease; }
+.grid button:hover img { transform: scale(1.03); }
+
+/* albums */
+.albums { background: var(--panel); border-block: 1px solid var(--line); }
+.spreads { display: grid; gap: clamp(14px, 2.4vw, 26px); }
+.spread { display: block; width: 100%; padding: 0; border: 0; background: var(--bg); border-radius: 6px; overflow: hidden; cursor: zoom-in; box-shadow: var(--shadow); -webkit-tap-highlight-color: transparent; }
+.spread img { display: block; width: 100%; height: auto; aspect-ratio: 1280 / 426; object-fit: cover; }
+.hint { color: var(--mute); font-size: 14px; margin: 16px 0 0; }
+@media (min-width: 700px) { .hint { display: none; } }
+
+/* lightbox */
+dialog { border: 0; padding: 0; background: transparent; max-width: 100vw; max-height: 100vh; max-height: 100dvh; width: 100vw; height: 100vh; height: 100dvh; margin: 0; overflow: hidden; }
+dialog::backdrop { background: rgba(5,6,8,.95); }
+.lb { width: 100%; height: 100%; display: grid; place-items: center; padding: max(16px, env(safe-area-inset-top, 0px)) max(12px, env(safe-area-inset-right, 0px)) calc(76px + env(safe-area-inset-bottom, 0px)) max(12px, env(safe-area-inset-left, 0px)); touch-action: pan-y; }
+.lb img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 4px; user-select: none; -webkit-user-select: none; }
+.lb-bar { position: fixed; left: 0; right: 0; bottom: 0; display: flex; justify-content: center; align-items: center; gap: 8px; padding: 12px max(12px, env(safe-area-inset-right, 0px)) max(14px, env(safe-area-inset-bottom, 0px)) max(12px, env(safe-area-inset-left, 0px)); }
+.lb-bar button { background: #1A1C22; color: #F1F2F5; border: 1px solid #30333D; border-radius: 999px; min-height: 44px; padding: 8px 16px; font: 800 14px var(--body); cursor: pointer; }
+.lb-bar span { font-family: var(--dot); font-weight: 900; color: #9298A8; min-width: 64px; text-align: center; font-variant-numeric: tabular-nums; }
+
+/* process */
+.steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; margin-top: 40px; }
+@media (max-width: 900px) and (min-width: 600px) { .steps { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; } .step h3 { font-size: 32px !important; } .step div { padding: 16px !important; } }
+@media (max-width: 599px) { .steps { grid-template-columns: 1fr; } .step { flex-direction: row !important; } .step img { width: 40% !important; aspect-ratio: auto !important; min-height: 100%; } }
+.step { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; display: flex; flex-direction: column; }
+.step img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; display: block; }
+.step div { padding: 20px 22px 24px; min-width: 0; }
+.step h3 { font-size: 40px; }
+.step:nth-child(2) h3 { color: var(--red); }
+.step:nth-child(3) h3 { color: var(--blue); }
+.step p { margin: 10px 0 0; color: var(--mute); font-size: 16px; }
+.step .n { font-family: var(--dot); font-weight: 900; color: var(--mute); font-size: 15px; letter-spacing: .1em; }
+
+/* contact */
+.board { background-color: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: clamp(24px, 5vw, 64px); display: grid; grid-template-columns: 1.1fr 0.9fr; gap: clamp(24px, 4vw, 40px); align-items: center;
+  background-image: radial-gradient(var(--led-off) 1.2px, transparent 1.4px); background-size: 12px 12px; }
+.board > div { min-width: 0; }
+@media (max-width: 860px) { .board { grid-template-columns: 1fr; } }
+.num { font-family: var(--display); font-weight: 900; font-size: clamp(38px, 7vw, 76px); line-height: 1; letter-spacing: .02em; -webkit-user-select: all; user-select: all; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.who { color: var(--mute); margin: 10px 0 24px; }
+.who b { color: var(--fg); }
+.copied { color: var(--blue); font-weight: 700; font-size: 14px; min-height: 1.4em; margin: 10px 0 0; }
+.ig { display: flex; align-items: center; gap: 14px; text-decoration: none; padding: 20px; border-radius: 12px; border: 1px solid var(--line); background: var(--bg); }
+.ig:hover { border-color: var(--red); }
+.ig svg { width: 44px; height: 44px; flex: none; color: var(--red); }
+.ig div { min-width: 0; }
+.ig strong { display: block; font-size: 20px; overflow-wrap: anywhere; }
+.ig span { color: var(--mute); font-size: 14px; }
+
+footer { border-top: 1px solid var(--line); padding-block: 28px max(28px, env(safe-area-inset-bottom, 0px)); }
+footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 14px; color: var(--mute); font-size: 14px; }
+footer img { height: 26px; width: auto; display: block; }
+</style>
+
+<header>
+  <div class="wrap bar">
+    <a href="#top" aria-label="Visual Crew home"><img src="logo.svg" alt="Visual Crew" width="67" height="30"></a>
+    <nav aria-label="Main">
+      <a class="link" href="#reel">Reel</a>
+      <a class="link" href="#work">Photos</a>
+      <a class="link" href="#albums">Albums</a>
+      <a class="link" href="#contact">Contact</a>
+      <button class="toggle" id="themeBtn" type="button" aria-label="Switch to dark mode">
+        <svg class="moon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.7 14.3A8.5 8.5 0 0 1 9.7 3.3a.6.6 0 0 0-.8-.7 9.5 9.5 0 1 0 12.5 12.5.6.6 0 0 0-.7-.8Z"/></svg>
+        <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></svg>
+      </button>
+      <a class="btn btn-wa" href="#contact">Book</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero" aria-label="Visual Crew">
+    <div class="wrap">
+      <h1 class="sr">Visual Crew</h1>
+      <canvas id="led" role="img" aria-label="VISUAL CREW logo in red and blue LED dots"></canvas>
+      <p class="tag">Photo and film crew for weddings, engagements and events.</p>
+      <div class="btns">
+        <a class="btn btn-wa" href="https://wa.me/918807042816?text=Hi%20Visual%20Crew%2C%20I%27d%20like%20to%20book%20a%20shoot." target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.8 11.9 11.9 0 0 0 4.6 4c1.7.7 2.4.8 3.2.7a2.8 2.8 0 0 0 1.8-1.3 2.3 2.3 0 0 0 .2-1.3c-.1-.1-.3-.2-.5-.3Z"/></svg>
+          Book on WhatsApp
+        </a>
+        <a class="btn btn-ghost" href="#work">See the work</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="reel">
+    <div class="wrap reel">
+      <div>
+        <p class="eyebrow"><b>●</b> REC · Behind the lens</p>
+        <h2>The crew at work</h2>
+        <p class="lead">Gimbals, tripods, lens changes and a lot of standing in corridors. This is what a Visual Crew shoot looks like from our side of the camera.</p>
+        <div class="words" aria-hidden="true"><span>Plan.</span><span>Frame.</span><span>Shoot.</span></div>
+      </div>
+      <div>
+        <div class="phone">
+          <video id="reelVid" src="reel.mp4" poster="img/reel-poster.jpg" autoplay muted loop playsinline webkit-playsinline preload="metadata"></video>
+          <button class="sound" id="soundBtn" type="button" aria-pressed="false">Sound on</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="work">
+    <div class="wrap">
+      <div class="head">
+        <div>
+          <p class="eyebrow">Portfolio</p>
+          <h2>The shots</h2>
+        </div>
+        <p class="count"><b>18</b> frames</p>
+      </div>
+      <div class="grid" id="grid"></div>
+    </div>
+  </section>
+
+  <section id="albums" class="albums">
+    <div class="wrap">
+      <div class="head">
+        <div>
+          <p class="eyebrow">Designed albums</p>
+          <h2>Albums</h2>
+        </div>
+        <p class="count"><b>5</b> spreads</p>
+      </div>
+      <p class="lead" style="margin:-6px 0 28px">Every shoot can become a printed album. Here are spreads from one engagement album we designed.</p>
+      <div class="spreads" id="spreads"></div>
+      <p class="hint">Tap a spread to open it. Turn your phone sideways for a bigger view.</p>
+    </div>
+  </section>
+
+  <section id="process">
+    <div class="wrap">
+      <p class="eyebrow">How we shoot</p>
+      <h2>Three steps</h2>
+      <div class="steps">
+        <article class="step">
+          <img src="img/bts1.webp" alt="Crew member checking the shot on a large camera lens" loading="lazy">
+          <div><span class="n">STEP 1</span><h3>Plan</h3><p>We talk through your day, the places and the moments you care about most.</p></div>
+        </article>
+        <article class="step">
+          <img src="img/bts2.webp" alt="Camera on a tripod framing a subject in a corridor" loading="lazy">
+          <div><span class="n">STEP 2</span><h3>Frame</h3><p>Gimbal, tripod and lens choices for every scene, set up before the moment happens.</p></div>
+        </article>
+        <article class="step">
+          <img src="img/bts0.webp" alt="Crew member operating a camera on a gimbal" loading="lazy">
+          <div><span class="n">STEP 3</span><h3>Shoot</h3><p>The crew covers the event so you can stay in it, not behind a phone.</p></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" style="padding-top:0">
+    <div class="wrap">
+      <div class="board">
+        <div>
+          <p class="eyebrow"><b>●</b> Bookings open</p>
+          <h2 style="margin-bottom:22px">Book a shoot</h2>
+          <div class="num" id="num">+91 88070 42816</div>
+          <p class="who">WhatsApp or call. Ask for <b>Yugesh</b>.</p>
+          <div class="btns">
+            <a class="btn btn-wa" href="https://wa.me/918807042816?text=Hi%20Visual%20Crew%2C%20I%27d%20like%20to%20book%20a%20shoot." target="_blank" rel="noopener">Message on WhatsApp</a>
+            <button class="btn btn-ghost" id="copyBtn" type="button">Copy number</button>
+          </div>
+          <p class="copied" id="copied" aria-live="polite"></p>
+        </div>
+        <div>
+          <a class="ig" href="https://www.instagram.com/visualcrewstudio/" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" stroke="none"/></svg>
+            <div><strong>@visualcrewstudio</strong><span>More shoots and reels on Instagram</span></div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <img src="logo.svg" alt="Visual Crew" width="58" height="26">
+    <span>© 2026 Visual Crew · <a href="https://www.instagram.com/visualcrewstudio/" target="_blank" rel="noopener">@visualcrewstudio</a></span>
+  </div>
+</footer>
+
+<dialog id="lb" aria-label="Image viewer">
+  <div class="lb" id="lbStage"><img id="lbImg" alt=""></div>
+  <div class="lb-bar">
+    <button type="button" id="lbPrev" aria-label="Previous">Prev</button>
+    <span id="lbPos">1 / 18</span>
+    <button type="button" id="lbNext" aria-label="Next">Next</button>
+    <button type="button" id="lbClose">Close</button>
+  </div>
+</dialog>
+
+<script>
+(() => {
+  const root = document.documentElement;
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // Theme toggle
+  const themeBtn = document.getElementById("themeBtn");
+  function label() { themeBtn.setAttribute("aria-label", root.getAttribute("data-vc") === "dark" ? "Switch to light mode" : "Switch to dark mode"); }
+  label();
+  themeBtn.addEventListener("click", () => {
+    const next = root.getAttribute("data-vc") === "dark" ? "light" : "dark";
+    root.setAttribute("data-vc", next);
+    try { localStorage.setItem("vc-theme", next); } catch (e) {}
+    label(); paintStatic();
+  });
+
+  // LED logo: dots light up left to right, VISUAL in red then CREW in blue.
+  const cv = document.getElementById("led");
+  const ctx = cv.getContext("2d");
+  let data = null, t0 = 0, running = false;
+  const css = (v) => getComputedStyle(root).getPropertyValue(v).trim();
+  function size() {
+    const w = cv.clientWidth || 860, dpr = Math.min(window.devicePixelRatio || 1, 2);
+    cv.width = Math.round(w * dpr); cv.height = Math.round((w / 2.219) * dpr);
+  }
+  function frame(el) {
+    const W = cv.width, pad = W * 0.04, iw = W - pad * 2, ih = iw / data.aspect, oy = (cv.height - ih) / 2;
+    const R = data.r * iw, off = css("--led-off"), col = { r: css("--red"), b: css("--blue") };
+    ctx.clearRect(0, 0, W, cv.height);
+    const n = data.dots.length;
+    data.dots.forEach((d, i) => {
+      const x = pad + d[0] * iw, y = oy + d[1] * ih;
+      const p = Math.max(0, Math.min(1, (el - (0.25 + (i / n) * 2.4)) / 0.18));
+      ctx.beginPath(); ctx.arc(x, y, R, 0, Math.PI * 2);
+      ctx.shadowBlur = 0; ctx.globalAlpha = 1; ctx.fillStyle = off; ctx.fill();
+      if (p > 0) { ctx.globalAlpha = p; ctx.shadowColor = col[d[2]]; ctx.shadowBlur = R * 2; ctx.fillStyle = col[d[2]]; ctx.fill(); }
+    });
+    ctx.globalAlpha = 1; ctx.shadowBlur = 0;
+  }
+  function loop(now) {
+    const el = reduce ? 99 : (now - t0) / 1000;
+    frame(el);
+    if (el < 3.2) requestAnimationFrame(loop); else running = false;
+  }
+  function paintStatic() { if (data && !running) frame(99); }
+  fetch("dots.json").then((r) => r.json()).then((j) => {
+    data = j; size(); t0 = performance.now(); running = true; requestAnimationFrame(loop);
+  }).catch(() => {
+    const img = new Image(); img.src = "logo.svg"; img.alt = "Visual Crew"; img.style.width = "min(860px,100%)"; cv.replaceWith(img);
+  });
+  let rz;
+  window.addEventListener("resize", () => { clearTimeout(rz); rz = setTimeout(() => { if (!data) return; size(); if (running) return; frame(99); }, 120); });
+
+  // Reel sound toggle
+  const vid = document.getElementById("reelVid"), sb = document.getElementById("soundBtn");
+  sb.addEventListener("click", () => {
+    vid.muted = !vid.muted;
+    if (!vid.muted) { vid.currentTime = 0; }
+    vid.play().catch(() => {});
+    sb.textContent = vid.muted ? "Sound on" : "Mute"; sb.setAttribute("aria-pressed", String(!vid.muted));
+  });
+
+  // Galleries
+  const PHOTOS = ["Couple touching foreheads under warm lights", "Silhouette of a couple against a bright circle", "Groom kissing the bride's forehead, both wearing garlands", "Couple embracing under fairy lights", "Groom portrait in a cream silk shirt", "Black and white portrait of the bride", "Engagement couple showing their rings on stage", "Bride holding the groom's face at night", "Couple in pink and maroon outfits under golden lights", "Wedding ritual with the groom and priest", "Close-up of hands with mehndi and rings", "Couple embracing at night under string lights", "Couple seated in front of a chocolate fountain", "Couple seated during the wedding ceremony", "Groom with folded hands among guests", "Couple framed by festoon lights", "Expecting mother in a silk saree", "Couple under a canopy of lights"]
+    .map((alt, i) => ({ src: `img/w${String(i).padStart(2, "0")}.webp`, alt }));
+  const ALBUMS = ["Album spread: groom portraits, The Royal Engagement", "Album spread: engagement day with family and trays", "Album spread: engagement eve ceremony, couple portraits", "Album spread: groom portraits in a green shirt", "Album spread: bride getting ready"]
+    .map((alt, i) => ({ src: `img/album${i}.webp`, alt }));
+
+  function build(list, host, cls, eager) {
+    list.forEach((it, i) => {
+      const b = document.createElement("button"); b.type = "button"; if (cls) b.className = cls;
+      b.setAttribute("aria-label", "Open " + it.alt);
+      const img = new Image(); img.src = it.src; img.alt = it.alt; img.loading = i < eager ? "eager" : "lazy"; img.decoding = "async";
+      b.append(img); b.addEventListener("click", () => open(list, i)); host.append(b);
+    });
+  }
+  build(PHOTOS, document.getElementById("grid"), "", 6);
+  build(ALBUMS, document.getElementById("spreads"), "spread", 0);
+
+  // Lightbox with buttons, keys and swipe
+  const lb = document.getElementById("lb"), lbImg = document.getElementById("lbImg"), pos = document.getElementById("lbPos");
+  let set = PHOTOS, cur = 0;
+  function show(i) { cur = (i + set.length) % set.length; lbImg.src = set[cur].src; lbImg.alt = set[cur].alt; pos.textContent = `${cur + 1} / ${set.length}`; }
+  function open(list, i) {
+    set = list; show(i);
+    if (typeof lb.showModal === "function") lb.showModal(); else lb.setAttribute("open", "");
+    document.body.style.overflow = "hidden";
+  }
+  function close() { if (lb.open) lb.close(); }
+  lb.addEventListener("close", () => { document.body.style.overflow = ""; });
+  document.getElementById("lbPrev").onclick = () => show(cur - 1);
+  document.getElementById("lbNext").onclick = () => show(cur + 1);
+  document.getElementById("lbClose").onclick = close;
+  document.getElementById("lbStage").addEventListener("click", (e) => { if (e.target.id === "lbStage") close(); });
+  lb.addEventListener("keydown", (e) => { if (e.key === "ArrowRight") show(cur + 1); if (e.key === "ArrowLeft") show(cur - 1); });
+  let sx = null, sy = null;
+  lb.addEventListener("touchstart", (e) => { sx = e.touches[0].clientX; sy = e.touches[0].clientY; }, { passive: true });
+  lb.addEventListener("touchend", (e) => {
+    if (sx === null) return;
+    const dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy;
+    if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) show(cur + (dx < 0 ? 1 : -1));
+    sx = sy = null;
+  });
+
+  // Copy number
+  const copied = document.getElementById("copied");
+  document.getElementById("copyBtn").addEventListener("click", () => {
+    const fallback = () => {
+      const r = document.createRange(); r.selectNodeContents(document.getElementById("num"));
+      const s = getSelection(); s.removeAllRanges(); s.addRange(r);
+      copied.textContent = "Number selected. Copy it from your keyboard menu.";
+    };
+    try { navigator.clipboard.writeText("+91 88070 42816").then(() => { copied.textContent = "Copied +91 88070 42816"; }, fallback); } catch (e) { fallback(); }
+  });
+})();
+</script>
+
+</body></html>
